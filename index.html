@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strona z Headerem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            padding-top: 180px; /* Dodane aby zawartość nie chowała się pod sticky navbar */
+        }
+        
+        .header {
+            background-color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 100;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .logo img {
+            height: 60px;
+            margin-right: 15px;
+        }
+        
+        .logo-text h1 {
+            color: rgb(0, 141, 64);
+            font-size: 24px;
+        }
+        
+        .logo-text p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .header-info {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .info-box {
+            text-align: center;
+        }
+        
+        .info-box h3 {
+            color: rgb(0, 141, 64);
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .info-box p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .slider-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Sticky Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background-color: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            z-index: 90;
+            padding: 10px 0;
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .nav-logo {
+            height: 40px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s;
+            padding: 5px 0;
+        }
+        
+        .nav-link:hover {
+            color: rgb(0, 141, 64);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: rgb(0, 141, 64);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Slider styles */
+        .slider {
+            display: flex;
+            transition: transform 0.8s ease-in-out;
+            height: 500px;
+        }
+        
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 40px;
+            padding-top: 80px;
+        }
+        
+        .slide-content h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .slide-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            max-width: 600px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: rgb(0, 141, 64);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: rgba(0, 141, 64, 0.9);
+        }
+        
+        .slider-nav {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 2;
+        }
+        
+        .slider-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .slider-dot.active {
+            background-color: rgb(0, 141, 64);
+            transform: scale(1.2);
+        }
+        
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 141, 64, 0.7);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s;
+        }
+        
+        .slider-arrow:hover {
+            background-color: rgb(0, 141, 64);
+        }
+        
+        .slider-prev {
+            left: 20px;
+        }
+        
+        .slider-next {
+            right: 20px;
+        }
+        
+        /* Sekcje strony - przykładowe */
+        section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        section h2 {
+            color: rgb(0, 141, 64);
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding-top: 150px;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                margin-bottom: 20px;
+                justify-content: center;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+            
+            .slider {
+                height: 400px;
+            }
+            
+            .slide-content {
+                padding: 20px;
+                padding-top: 60px;
+            }
+            
+            .slide-content h2 {
+                font-size: 24px;
+            }
+            
+            .slide-content p {
+                font-size: 16px;
+            }
+            
+            .navbar-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="https://via.placeholder.com/60x60/008d40/ffffff?text=LOGO" alt="Logo">
+                <div class="logo-text">
+                    <h1>EcoSolution</h1>
+                    <p>Zrównoważone rozwiązania dla Twojego biznesu</p>
+                </div>
+            </a>
+            
+            <div class="header-info">
+                <div class="info-box">
+                    <h3>Godziny otwarcia</h3>
+                    <p>Pon-Pt: 8:00-16:00</p>
+                </div>
+                <div class="info-box">
+                    <h3>Kontakt</h3>
+                    <p>+48 123 456 789</p>
+                </div>
+                <div class="info-box">
+                    <h3>Email</h3>
+                    <p>kontakt@ecosolution.pl</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slider-container">
+            <div class="slider">
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Ekologiczne rozwiązania">
+                    <div class="slide-content">
+                        <h2>Innowacyjne rozwiązania ekologiczne</h2>
+                        <p>Oferujemy najnowocześniejsze technologie przyjazne środowisku, które pomogą Twojej firmie zmniejszyć ślad węglowy i obniżyć koszty.</p>
+                        <a href="#oferta" class="btn">Dowiedz się więcej</a>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Zielona energia">
+                    <div class="slide-content">
+                        <h2>Zielona energia dla Twojego domu</h2>
+                        <p>Nasze panele słoneczne i turbiny wiatrowe zapewnią Ci niezależność energetyczną i znaczące oszczędności już w pierwszym roku użytkowania.</p>
+                        <a href="#cennik" class="btn">Sprawdź ofertę</a>
+                    </div>
+                </div>
+                <div class="slide">
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80" alt="Doradztwo ekologiczne">
+                    <div class="slide-content">
+                        <h2>Profesjonalne doradztwo ekologiczne</h2>
+                        <p>Nasi eksperci pomogą Ci wdrożyć rozwiązania zgodne z zasadami zrównoważonego rozwoju i najnowszymi regulacjami prawnymi.</p>
+                        <a href="#kontakt" class="btn">Umów konsultację</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slider-arrow slider-prev">&#10094;</div>
+            <div class="slider-arrow slider-next">&#10095;</div>
+            
+            <div class="slider-nav">
+                <div class="slider-dot active"></div>
+                <div class="slider-dot"></div>
+                <div class="slider-dot"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sticky Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <img src="https://via.placeholder.com/120x40/008d40/ffffff?text=EcoSolution" alt="Logo" class="nav-logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+            
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#oferta" class="nav-link">Oferta</a></li>
+                <li class="nav-item"><a href="#onas" class="nav-link">O nas</a></li>
+                <li class="nav-item"><a href="#cennik" class="nav-link">Cennik</a></li>
+                <li class="nav-item"><a href="#terminy" class="nav-link">Terminy</a></li>
+                <li class="nav-item"><a href="#kontakt" class="nav-link">Kontakt</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Przykładowe sekcje -->
+    <section id="oferta">
+        <h2>Nasza Oferta</h2>
+        <p>Tutaj znajdziesz szczegółowy opis oferty naszej firmy...</p>
+    </section>
+    
+    <section id="onas">
+        <h2>O Nas</h2>
+        <p>Poznaj naszą historię i zespół ekspertów...</p>
+    </section>
+    
+    <section id="cennik">
+        <h2>Cennik</h2>
+        <p>Sprawdź nasze konkurencyjne ceny...</p>
+    </section>
+    
+    <section id="terminy">
+        <h2>Terminy</h2>
+        <p>Dostępne terminy realizacji projektów...</p>
+    </section>
+    
+    <section id="kontakt">
+        <h2>Kontakt</h2>
+        <p>Skontaktuj się z nami...</p>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slider = document.querySelector('.slider');
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.slider-dot');
+            const prevBtn = document.querySelector('.slider-prev');
+            const nextBtn = document.querySelector('.slider-next');
+            let currentIndex = 0;
+            const slideCount = slides.length;
+            let slideInterval;
+            const intervalTime = 7000; // 7 sekund
+            
+            function updateSlider() {
+                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+                
+                dots.forEach((dot, index) => {
+                    if(index === currentIndex) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+            
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slideCount;
+                updateSlider();
+                resetInterval();
+            }
+            
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+                updateSlider();
+                resetInterval();
+            }
+            
+            function resetInterval() {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, intervalTime);
+            }
+            
+            // Automatyczne przewijanie
+            slideInterval = setInterval(nextSlide, intervalTime);
+            
+            // Kliknięcie w kropki
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateSlider();
+                    resetInterval();
+                });
+            });
+            
+            // Strzałki
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+            
+            // Pauza przy najechaniu
+            slider.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+            
+            slider.addEventListener('mouseleave', () => {
+                resetInterval();
+            });
+
+            // Płynne przewijanie do sekcji
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
